@@ -48,17 +48,15 @@ func LoadItems(file *os.File) []*Person {
 }
 
 func NewDB() *Database {
-	filename := "db.txt"
-	file, err := os.OpenFile(filename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
+	db := new(Database)
+	db.filepath = "db.txt"
+	var err error
+	db.file, err = os.OpenFile(db.filepath, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	items := LoadItems(file)
-	return &Database{
-		filepath: filename,
-		file:     file,
-		items:    items,
-	}
+	db.items = LoadItems(db.file)
+	return db
 }
 
 func (db *Database) Insert(p *Person) {
