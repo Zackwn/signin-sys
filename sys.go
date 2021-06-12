@@ -61,7 +61,7 @@ func DisplayMenu(commands []Command) {
 				break
 			}
 		}
-		if commandFound == false {
+		if !commandFound {
 			fmt.Println("Command not found.")
 		}
 		fmt.Print("Press 'Enter' to continue...")

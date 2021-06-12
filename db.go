@@ -18,6 +18,9 @@ func LoadItems(file *os.File) []*Person {
 	var items []*Person
 	parsePerson := func(p string) {
 		info := strings.Split(p, "|")
+		if len(info) != 2 {
+			return
+		}
 		name := info[0]
 		age, err := strconv.Atoi(info[1][:len(info[1])])
 		if err != nil {
@@ -42,6 +45,20 @@ func LoadItems(file *os.File) []*Person {
 			} else {
 				p += string(char)
 			}
+		}
+		// parse miss buffered data slice
+		if len(p) != 0 {
+			buff := make([]byte, 1)
+			for {
+				_, err := file.Read(buff)
+				if err == io.EOF {
+					break
+				} else if err != nil {
+					log.Fatalln(err)
+				}
+				p += string(buff)
+			}
+			parsePerson(p[:len(p)-1]) // remove \n
 		}
 	}
 	return items
